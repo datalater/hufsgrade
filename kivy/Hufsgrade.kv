@@ -1,23 +1,35 @@
 LoginForm:
 
-<LoginForm@BoxLayout>:
+<LoginForm>:
     orientation: "vertical"
+    id_input: id_box
+    pwd_input: pwd_box
+    studentinfo_results: studentinfo_results_list
     BoxLayout:
         size_hint_y: 0.1
         Button:
             text: "HufsGrade"
     BoxLayout:
-        size_hint_y: 0.4
+        size_hint_y: 0.1
         Label:
             text: "user_id:"
         TextInput:
+            id: id_box
+            multiline: False
     BoxLayout:
-        size_hint_y: 0.4
+        size_hint_y: 0.1
         Label:
             text: "password:"
         TextInput:
+            id: pwd_box
+            password: True
+            multiline: False
     BoxLayout:
         size_hint_y: 0.1
-        
         Button:
             text: "Login"
+            on_press: root.login()
+    ListView:
+        id: studentinfo_results_list
+        item_strings: []
+        
