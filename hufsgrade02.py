@@ -4,7 +4,7 @@ import getpass
 
 from kivy.app import App
 from kivy.uix.widget import Widget
-
+import re
 
 #headers=head의 역할
 #params vs data=params
@@ -41,9 +41,17 @@ class parse_score():
 
         #print(html.text)
 
-        for dummy in html.find_all('td', {'class':'table_wl'}):
-            for dummy2 in dummy.stripped_strings:
-                print(dummy2)
+        for major in html.find(string=re.compile('소속')).parent.next_sibling.next_sibling.stripped_strings:
+            major = major.replace("(","")
+            major = major.replace(")","")
+            print(major)
+
+        print(html.find(string=re.compile('학번')).parent.next_sibling.next_sibling.string)
+        print(html.find(string=re.compile('성명')).parent.next_sibling.next_sibling.next_sibling.next_sibling.string)
+
+# 소속(ResultSet): html.find(string=re.compile('소속')).parent.next_sibling.next_sibling.stripped_strings
+# 학번: html.find(string=re.compile('학번')).parent.next_sibling.next_sibling.string
+# 성명: html.find(string=re.compile('성명')).parent.next_sibling.next_sibling.next_sibling.next_sibling.string
 
 
 if __name__ == '__main__':

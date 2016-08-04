@@ -1,3 +1,7 @@
+#: import ListItemButton kivy.uix.listview.ListItemButton
+#: import ListAdapter kivy.adapters.listadapter.ListAdapter
+#: import os os
+
 LoginForm:
 
 <LoginForm>:
@@ -29,7 +33,13 @@ LoginForm:
         Button:
             text: "Login"
             on_press: root.login()
+        Button:
+            text: "student info"
+            on_press: root.studentinfo()
     ListView:
         id: studentinfo_results_list
-        item_strings: []
+		adapter:
+            ListAdapter(data=[], cls=ListItemButton)
+        font_name: '/'.join([os.getenv('SystemRoot'),'/fonts/NanumGothic.ttf'])
+		
         
