@@ -8,7 +8,6 @@ import requests
 from bs4 import BeautifulSoup
 import re
 
-import os
 
 head={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 login_url = "https://webs.hufs.ac.kr/src08/jsp/login/LOGIN1011M.jsp"
@@ -22,8 +21,6 @@ class LoginForm(BoxLayout):
 
     def login(self):
         self.current_session = requests.session()
-        fontName = '\\'.join([os.getenv('SystemRoot'),r'fonts\NanumGothic.ttf'])
-        print(fontName)
 
         params={
             'user_id': self.id_input.text,
@@ -42,17 +39,13 @@ class LoginForm(BoxLayout):
         self.studentinfo=self.current_session.get(studentinfo_url,headers=head)
         html = BeautifulSoup(self.studentinfo.text, "html.parser")
         
-        for major in html.find(string=re.compile('소속')).parent.next_sibling.next_sibling.stripped_strings:
-            major = major.replace("(","")
-            major = major.replace(")","")
-            major = major.replace(u'\xa0', u' ')
-            print(major)
-            
-        student_major = major
-        student_id = html.find(string=re.compile('학번')).parent.next_sibling.next_sibling.string
-        student_name = html.find(string=re.compile('성명')).parent.next_sibling.next_sibling.next_sibling.next_sibling.string
+        student_college = html.find(string=re.compile('소속')).parent.next_sibling.next_sibling.next_element.next_element.string
+        student_major = student_college.next_element.next_element.next_element.next_element.string
+        student_id= html.find(string=re.compile('학번')).parent.next_sibling.next_sibling.string
+        student_name = html.find(string=re.compile('성명')).parent.parent.next_sibling.next_element.next_element.next_element.next_sibling.next_sibling.string
+        student_name = student_name.replace("\r\n\t\t\t\t","")
         
-        studentinfo = [student_major, student_id, student_name]
+        studentinfo = [student_college, student_major, student_id, student_name]
         self.studentinfo_results.item_strings = studentinfo
 
 # 소속(ResultSet): html.find(string=re.compile('소속')).parent.next_sibling.next_sibling.stripped_strings

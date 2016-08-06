@@ -41,17 +41,21 @@ class parse_score():
 
         #print(html.text)
 
-        for major in html.find(string=re.compile('소속')).parent.next_sibling.next_sibling.stripped_strings:
-            major = major.replace("(","")
-            major = major.replace(")","")
-            print(major)
+        student_college = html.find(string=re.compile('소속')).parent.next_sibling.next_sibling.next_element.next_element.string
+        student_major = student_college.next_element.next_element.next_element.next_element.string
+        student_id= html.find(string=re.compile('학번')).parent.next_sibling.next_sibling.string
+        student_name = html.find(string=re.compile('성명')).parent.parent.next_sibling.next_element.next_element.next_element.next_sibling.next_sibling.string
+        student_name = student_name.replace("\r\n\t\t\t\t","")
+        print(student_college)
+        print(student_major)
+        print(student_id)
+        print(student_name)
 
-        print(html.find(string=re.compile('학번')).parent.next_sibling.next_sibling.string)
-        print(html.find(string=re.compile('성명')).parent.next_sibling.next_sibling.next_sibling.next_sibling.string)
-
-# 소속(ResultSet): html.find(string=re.compile('소속')).parent.next_sibling.next_sibling.stripped_strings
-# 학번: html.find(string=re.compile('학번')).parent.next_sibling.next_sibling.string
-# 성명: html.find(string=re.compile('성명')).parent.next_sibling.next_sibling.next_sibling.next_sibling.string
+# 소속대학: student_college = html.find(string=re.compile('소속')).parent.next_sibling.next_sibling.next_element.next_element.string
+# 소속학과: student_major = student_college.next_element.next_element.next_element.next_element.string
+# 학번: student_id = html.find(string=re.compile('학번')).parent.next_sibling.next_sibling.string
+# 성명: student_name = html.find(string=re.compile('성명')).parent.next_sibling.next_sibling.next_sibling.next_sibling.string
+# 성명: student_name = student_name.replace("\r\n\t\t\t\t","")
 
 
 if __name__ == '__main__':
