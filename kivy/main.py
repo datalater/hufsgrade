@@ -3,10 +3,12 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty
 from kivy.network.urlrequest import UrlRequest
 from kivy.uix.button import Button
+from kivy.factory import Factory
 
 import requests
 from bs4 import BeautifulSoup
 import re
+
 
 
 head={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
@@ -15,7 +17,15 @@ main_page = "http://webs.hufs.ac.kr:8989/src08/jsp/main.jsp?"
 studentinfo_url = "http://webs.hufs.ac.kr:8989/src08/jsp/stuinfo_10/STUINFO1000C_myinfo.jsp"
 
 class HufsGradeRoot(BoxLayout):
-    pass
+    def graduate(self): # graduate(졸업관리): 졸업 이수 학점, 현재 이수 학점, 남은 이수 학점
+        self.clear_widgets()
+        graduate = Factory.Graduate()
+        self.add_widget(graduate)
+        
+    def show_login_form(self): # graduate의 back버튼(to Home)
+        self.clear_widgets()
+        self.add_widget(LoginForm())
+        
 
 class LoginForm(BoxLayout):    
     id_input = ObjectProperty()
