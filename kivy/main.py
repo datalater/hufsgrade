@@ -14,6 +14,9 @@ login_url = "https://webs.hufs.ac.kr/src08/jsp/login/LOGIN1011M.jsp"
 main_page = "http://webs.hufs.ac.kr:8989/src08/jsp/main.jsp?"
 studentinfo_url = "http://webs.hufs.ac.kr:8989/src08/jsp/stuinfo_10/STUINFO1000C_myinfo.jsp"
 
+class HufsGradeRoot(BoxLayout):
+    pass
+
 class LoginForm(BoxLayout):    
     id_input = ObjectProperty()
     pwd_input = ObjectProperty()
@@ -34,8 +37,7 @@ class LoginForm(BoxLayout):
         self.current_session.get(main_page,headers=head)
                 
         print("user id is '{}',\nuser pwd is '{}'.".format(self.id_input.text, self.pwd_input.text))
-     
-    def studentinfo(self):
+        
         self.studentinfo=self.current_session.get(studentinfo_url,headers=head)
         html = BeautifulSoup(self.studentinfo.text, "html.parser")
         
@@ -47,6 +49,9 @@ class LoginForm(BoxLayout):
         
         studentinfo = [student_college, student_major, student_id, student_name]
         self.studentinfo_results.item_strings = studentinfo
+        self.studentinfo_results.adapter.data.clear()
+        self.studentinfo_results.adapter.data.extend(studentinfo)
+        self.studentinfo_results._trigger_reset_populate()
 
 # 소속(ResultSet): html.find(string=re.compile('소속')).parent.next_sibling.next_sibling.stripped_strings
 # 학번: html.find(string=re.compile('학번')).parent.next_sibling.next_sibling.string

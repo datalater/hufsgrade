@@ -1,7 +1,10 @@
 #: import ListItemButton kivy.uix.listview.ListItemButton
 #: import ListAdapter kivy.adapters.listadapter.ListAdapter
 
-LoginForm:
+HufsGradeRoot:
+
+<HufsGradeRoot>:
+    LoginForm
 
 <LoginForm>:
     orientation: "vertical"
@@ -11,7 +14,7 @@ LoginForm:
     BoxLayout:
         size_hint_y: 0.1
         Button:
-            text: "HufsGrade"
+            text: "(1) Enter your id and password. (2) Press the button you want."
     BoxLayout:
         size_hint_y: 0.1
         Label:
@@ -29,16 +32,16 @@ LoginForm:
             multiline: False
     BoxLayout:
         size_hint_y: 0.1
-        Button:
-            text: "Login"
-            on_press: root.login()
-        Button:
-            text: "student info"
-            on_press: root.studentinfo()
+        BoxLayout:
+            Button:
+                text: "Student info"
+                on_press: root.login()
+            Button:
+                text: "Credits to graduate"
     ListView:
         id: studentinfo_results_list
 		adapter:
             ListAdapter(data=[], cls=ListItemButton)
-        font_name: 'Elephnt.tff'
+        font_name: 'ELEPHNT.TTF'
 		
         
