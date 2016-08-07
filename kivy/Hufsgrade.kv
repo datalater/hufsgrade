@@ -23,7 +23,6 @@ HufsGradeRoot:
     id_input: id_box
     pwd_input: pwd_box
     studentinfo_results: studentinfo_results_list
-    credits_required: credits_required_list
     
     BoxLayout:
         size_hint_y: 0.1
@@ -65,10 +64,6 @@ HufsGradeRoot:
             adapter:
                 ListAdapter(data=[], cls=ListItemButton)
             font_name: 'ELEPHNT.TTF'
-        ListView:
-            id: credits_required_list
-            adapter:
-                ListAdapter(data=[], cls=ListItemButton)
     Button:
         height: "40dp"
         size_hint_y: None

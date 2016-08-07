@@ -69,23 +69,28 @@ class parse_score():
         grade_per_average = grade_data[-2:-1]
         #credits_completed = list(map(int, credits_completed))
         #grade_per_average = list(map(float, grade_per_average))
-        print(credits_completed)
-        print(grade_per_average)
-
         credits_to_graduate = [major_state] + credits_completed + grade_per_average
-
-        print(credits_to_graduate)
+        print(credits_to_graduate)        
 
         #2015~학번(사범대 제외)
         #dual_major_required = [54, 42, 0, 6, 26, 0, 0, 6, 134]
-        #minor_required = [70, 0, 21, 6, 26, 0, 0, 11, 134]
+        #minor_required = [70, 0, 0, 6, 26, 21, 0, 11, 134]
       
         #2007~2014학번(사범대 제외)
-        dual_major_required = [54, 54, 0, 4, 22, 0, 0, 0, 134]
-        minor_required = [75, 0, 21, 4, 22, 0, 0, 12, 134]
-        
-        
+        dual_major_required = ['Dual major required', 54, 54, 0, 4, 22, 0, 0, 0, 134, 4.5]
+        minor_required = ['Minor required', 75, 0, 0, 4, 22, 21, 0, 12, 134, 4.5]
+        dual_major_required = list(map(str, dual_major_required))
+        minor_required = list(map(str, minor_required))
 
+        versus_list = ['versus: ', 'first major: ', 'dual major: ', 'double major: ', 'practical foreign language: ', 'liberal arts: ', 'minor: ', 'teaching: ', 'free: ', 'total: ', 'GPA: ']
+
+        print(len(versus_list))
+        print(len(credits_to_graduate))
+        print(len(dual_major_required))
+         
+        for i in range(len(versus_list)):
+            versus_list[i] = versus_list[i]+credits_to_graduate[i] + " / " + dual_major_required[i]
+        print(versus_list)
         
 
 

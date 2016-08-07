@@ -31,9 +31,7 @@ class HufsGradeRoot(BoxLayout):
 class LoginForm(BoxLayout):    
     id_input = ObjectProperty()
     pwd_input = ObjectProperty()
-    studentinfo_results = ObjectProperty()
-    credits_required= ObjectProperty()
-    
+    studentinfo_results = ObjectProperty()    
 
     def login(self):
         self.current_session = requests.session()
@@ -112,22 +110,25 @@ class LoginForm(BoxLayout):
         #minor_required = [70, 0, 21, 6, 26, 0, 0, 11, 134]
       
         #2007~2014학번(사범대 제외)
-        dual_major_required = ['Dual major required', 54, 54, 0, 4, 22, 0, 0, 0, 134]
-        minor_required = ['Minor required', 75, 0, 21, 4, 22, 0, 0, 12, 134]
+        dual_major_required = ['Dual major required', 54, 54, 0, 4, 22, 0, 0, 0, 134, 4.5]
+        minor_required = ['Minor required', 75, 0, 0, 4, 22, 21, 0, 12, 134, 4.5]
         dual_major_required = list(map(str, dual_major_required))
         minor_required = list(map(str, minor_required))
+
+        versus_list = ['versus: ', 'first major: ', 'dual major: ', 'double major: ', 'practical foreign language: ', 'liberal arts: ', 'minor: ', 'teaching: ', 'free: ', 'total: ', 'GPA: ']
         
         
         if major_state == "Dual major":
-            self.credits_required.item_strings = dual_major_required
-            self.credits_required.adapter.data.clear()
-            self.credits_required.adapter.data.extend(dual_major_required)
-            self.credits_required._trigger_reset_populate()
+            for i in range(len(versus_list)):
+                versus_list[i] = versus_list[i]+credits_to_graduate[i] + " / " + dual_major_required[i]
         elif major_state == "Minor":
-            self.credits_required.item_strings = minor_required
-            self.credits_required.adapter.data.clear()
-            self.credits_required.adapter.data.extend(minor_required)
-            self.credits_required._trigger_reset_populate()
+            for i in range(len(versus_list)):
+                versus_list[i] = versus_list[i]+credits_to_graduate[i] + " / " + minor_major_required[i]
+        
+        self.studentinfo_results.item_strings = versus_list
+        self.studentinfo_results.adapter.data.clear()
+        self.studentinfo_results.adapter.data.extend(versus_list)
+        self.studentinfo_results._trigger_reset_populate()
         
         
         ## 두 번 누르면 다음과 같은 오류 뜸 => TypeError: 'Response' object is not callable
