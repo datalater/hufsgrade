@@ -32,6 +32,7 @@ class LoginForm(BoxLayout):
     id_input = ObjectProperty()
     pwd_input = ObjectProperty()
     studentinfo_results = ObjectProperty()
+    credits_required= ObjectProperty()
     
 
     def login(self):
@@ -97,13 +98,37 @@ class LoginForm(BoxLayout):
             major_state = "not yet decided"
                 
         grade_data = [i.string for i in html.find("tr",class_="table_w").find_all("td")]
-        grade_data=grade_data[1:-1]
-                
-        credits_to_graduate = [major_state] + grade_data
+        credits_completed = grade_data[1:-2]
+        grade_per_average = grade_data[-2:-1]
+                        
+        credits_to_graduate = [major_state] + credits_completed + grade_per_average
         self.studentinfo_results.item_strings = credits_to_graduate
         self.studentinfo_results.adapter.data.clear()
         self.studentinfo_results.adapter.data.extend(credits_to_graduate)
         self.studentinfo_results._trigger_reset_populate()
+        
+        #2015~학번(사범대 제외)
+        #dual_major_required = [54, 42, 0, 6, 26, 0, 0, 6, 134]
+        #minor_required = [70, 0, 21, 6, 26, 0, 0, 11, 134]
+      
+        #2007~2014학번(사범대 제외)
+        dual_major_required = ['Dual major required', 54, 54, 0, 4, 22, 0, 0, 0, 134]
+        minor_required = ['Minor required', 75, 0, 21, 4, 22, 0, 0, 12, 134]
+        dual_major_required = list(map(str, dual_major_required))
+        minor_required = list(map(str, minor_required))
+        
+        
+        if major_state == "Dual major":
+            self.credits_required.item_strings = dual_major_required
+            self.credits_required.adapter.data.clear()
+            self.credits_required.adapter.data.extend(dual_major_required)
+            self.credits_required._trigger_reset_populate()
+        elif major_state == "Minor":
+            self.credits_required.item_strings = minor_required
+            self.credits_required.adapter.data.clear()
+            self.credits_required.adapter.data.extend(minor_required)
+            self.credits_required._trigger_reset_populate()
+        
         
         ## 두 번 누르면 다음과 같은 오류 뜸 => TypeError: 'Response' object is not callable
 

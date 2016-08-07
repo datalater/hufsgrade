@@ -23,11 +23,12 @@ HufsGradeRoot:
     id_input: id_box
     pwd_input: pwd_box
     studentinfo_results: studentinfo_results_list
+    credits_required: credits_required_list
     
     BoxLayout:
         size_hint_y: 0.1
         Button:
-            text: "(1) Type your id and password. (2) Click the button you want."
+            text: "(1) Type your id and password. (2) Click the button you want. |  ver.07~14"
     BoxLayout:
         size_hint_y: 0.1
         Label:
@@ -58,11 +59,16 @@ HufsGradeRoot:
             Button:
                 text: "Grade Analysis"
                 on_press: app.root.show_grade_analysis()
-    ListView:
-        id: studentinfo_results_list
-		adapter:
-            ListAdapter(data=[], cls=ListItemButton)
-        font_name: 'ELEPHNT.TTF'
+    BoxLayout:
+        ListView:
+            id: studentinfo_results_list
+            adapter:
+                ListAdapter(data=[], cls=ListItemButton)
+            font_name: 'ELEPHNT.TTF'
+        ListView:
+            id: credits_required_list
+            adapter:
+                ListAdapter(data=[], cls=ListItemButton)
     Button:
         height: "40dp"
         size_hint_y: None

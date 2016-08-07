@@ -67,10 +67,14 @@ class parse_score():
         grade_data = [i.string for i in html.find("tr",class_="table_w").find_all("td")]
         credits_completed = grade_data[1:-2]
         grade_per_average = grade_data[-2:-1]
-        credits_completed = list(map(int, credits_completed))
-        grade_per_average = list(map(float, grade_per_average))
+        #credits_completed = list(map(int, credits_completed))
+        #grade_per_average = list(map(float, grade_per_average))
         print(credits_completed)
         print(grade_per_average)
+
+        credits_to_graduate = [major_state] + credits_completed + grade_per_average
+
+        print(credits_to_graduate)
 
         #2015~학번(사범대 제외)
         #dual_major_required = [54, 42, 0, 6, 26, 0, 0, 6, 134]
