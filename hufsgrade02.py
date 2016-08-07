@@ -5,6 +5,7 @@ import getpass
 from kivy.app import App
 from kivy.uix.widget import Widget
 import re
+import time
 
 #headers=head의 역할
 #params vs data=params
@@ -13,10 +14,9 @@ head={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit
 login_url = "https://webs.hufs.ac.kr/src08/jsp/login/LOGIN1011M.jsp"
 main_page = "http://webs.hufs.ac.kr:8989/src08/jsp/main.jsp?"
 studentinfo_url = "http://webs.hufs.ac.kr:8989/src08/jsp/stuinfo_10/STUINFO1000C_myinfo.jsp"
-
+gradeinfo_url = "http://webs.hufs.ac.kr:8989/src08/jsp/grade/GRADE1030L_Top.jsp?tab_lang=K"
 
 class parse_score():
-
     def __init__(self):
         self.yourid = input("아이디: ")
         self.yourpwd = getpass.getpass("비밀번호: ")
@@ -51,11 +51,33 @@ class parse_score():
         print(student_id)
         print(student_name)
 
+
+        self.gradeinfo=self.current_session.get(gradeinfo_url,headers=head)
+        html = BeautifulSoup(self.gradeinfo.text, "html.parser")
+        
+        major_state = ""
+        if html.find(string=re.compile('이중전공')) is not None:
+            major_state ="dual major"
+        elif html.find(string=re.compile('부전공')) is not None:
+            major_state = "minor"
+        else:
+            major_state = "not yet decided"
+        print(major_state)
+        
+        grade_data = [i.string for i in html.find("tr",class_="table_w").find_all("td")]
+        grade_data=grade_data[1:-1]
+        
+        print(grade_data)
+
+
 # 소속대학: student_college = html.find(string=re.compile('소속')).parent.next_sibling.next_sibling.next_element.next_element.string
 # 소속학과: student_major = student_college.next_element.next_element.next_element.next_element.string
 # 학번: student_id = html.find(string=re.compile('학번')).parent.next_sibling.next_sibling.string
 # 성명: student_name = html.find(string=re.compile('성명')).parent.next_sibling.next_sibling.next_sibling.next_sibling.string
 # 성명: student_name = student_name.replace("\r\n\t\t\t\t","")
+
+
+        
 
 
 if __name__ == '__main__':

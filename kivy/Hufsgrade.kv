@@ -6,7 +6,7 @@ HufsGradeRoot:
 
 <HufsGradeRoot>:
  
-<Graduate@BoxLayout>:
+<Grade_Analysis@BoxLayout>:
     orientation: "vertical"
     Label:
         text: "text"
@@ -26,10 +26,11 @@ HufsGradeRoot:
     id_input: id_box
     pwd_input: pwd_box
     studentinfo_results: studentinfo_results_list
+    
     BoxLayout:
         size_hint_y: 0.1
         Button:
-            text: "(1) Enter your id and password. (2) Press the button you want."
+            text: "(1) Type your id and password. (2) Click the button you want."
     BoxLayout:
         size_hint_y: 0.1
         Label:
@@ -37,6 +38,7 @@ HufsGradeRoot:
         TextInput:
             id: id_box
             multiline: False
+            focus: True
     BoxLayout:
         size_hint_y: 0.1
         Label:
@@ -45,6 +47,8 @@ HufsGradeRoot:
             id: pwd_box
             password: True
             multiline: False
+            focus: True
+            on_text_validate: root.login()
     BoxLayout:
         size_hint_y: 0.1
         BoxLayout:
@@ -53,11 +57,19 @@ HufsGradeRoot:
                 on_press: root.login()
             Button:
                 text: "Credits to graduate"
-                on_press: app.root.graduate()
+                on_press: root.credits_to_graduate()
+            Button:
+                text: "Grade Analysis"
+                on_press: app.root.grade_analysis()
     ListView:
         id: studentinfo_results_list
 		adapter:
             ListAdapter(data=[], cls=ListItemButton)
         font_name: 'ELEPHNT.TTF'
+    Button:
+        height: "40dp"
+        size_hint_y: None
+        text: "Logout"
+        on_press: app.root.show_login_form()
 		
         
