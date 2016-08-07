@@ -47,7 +47,7 @@ class LoginForm(BoxLayout):
         self.current_session.post(login_url,data=params,headers=head)
         self.current_session.get(main_page,headers=head)
                 
-        print("user id is '{}',\nuser pwd is '{}'.".format(self.id_input.text, self.pwd_input.text))
+        #print("user id is '{}',\nuser pwd is '{}'.".format(self.id_input.text, self.pwd_input.text))
         
         self.studentinfo=self.current_session.get(studentinfo_url,headers=head)
         html = BeautifulSoup(self.studentinfo.text, "html.parser")
@@ -81,8 +81,6 @@ class LoginForm(BoxLayout):
 
         self.current_session.post(login_url,data=params,headers=head)
         self.current_session.get(main_page,headers=head)
-                
-        print("user id is '{}',\nuser pwd is '{}'.".format(self.id_input.text, self.pwd_input.text))
         
         self.credits_to_graduate=self.current_session.get(credits_to_graduate_url,headers=head)
         html = BeautifulSoup(self.credits_to_graduate.text, "html.parser")
@@ -110,19 +108,28 @@ class LoginForm(BoxLayout):
         #minor_required = [70, 0, 21, 6, 26, 0, 0, 11, 134]
       
         #2007~2014학번(사범대 제외)
-        dual_major_required = ['Dual major required', 54, 54, 0, 4, 22, 0, 0, 0, 134, 4.5]
-        minor_required = ['Minor required', 75, 0, 0, 4, 22, 21, 0, 12, 134, 4.5]
+        dual_major_required = ['', 54, 54, 0, 4, 22, 0, 0, 0, 134, 4.5]
+        minor_required = ['', 75, 0, 0, 4, 22, 21, 0, 12, 134, 4.5]
         dual_major_required = list(map(str, dual_major_required))
         minor_required = list(map(str, minor_required))
 
-        versus_list = ['versus: ', 'first major: ', 'dual major: ', 'double major: ', 'practical foreign language: ', 'liberal arts: ', 'minor: ', 'teaching: ', 'free: ', 'total: ', 'GPA: ']
-        
+        versus_list = [
+        'Credits earned per field', 
+        '1st major: ', 
+        'Double major: ', 
+        '2nd major: ', 
+        'Practical foreign language: ', 
+        'Liberal arts: ', 
+        'Minor: ', 
+        'Teaching profession: ', 
+        'Elective subject credits: ', 
+        'Total credits: ', 'Total GPA: ']
         
         if major_state == "Dual major":
-            for i in range(len(versus_list)):
+            for i in range(1,len(versus_list)):
                 versus_list[i] = versus_list[i]+credits_to_graduate[i] + " / " + dual_major_required[i]
         elif major_state == "Minor":
-            for i in range(len(versus_list)):
+            for i in range(1,len(versus_list)):
                 versus_list[i] = versus_list[i]+credits_to_graduate[i] + " / " + minor_major_required[i]
         
         self.studentinfo_results.item_strings = versus_list
