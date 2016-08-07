@@ -9,8 +9,6 @@ import requests
 from bs4 import BeautifulSoup
 import re
 
-
-
 head={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 login_url = "https://webs.hufs.ac.kr/src08/jsp/login/LOGIN1011M.jsp"
 main_page = "http://webs.hufs.ac.kr:8989/src08/jsp/main.jsp?"
@@ -18,12 +16,12 @@ studentinfo_url = "http://webs.hufs.ac.kr:8989/src08/jsp/stuinfo_10/STUINFO1000C
 credits_to_graduate_url = "http://webs.hufs.ac.kr:8989/src08/jsp/grade/GRADE1030L_Top.jsp?tab_lang=K"
 
 class HufsGradeRoot(BoxLayout):
-    def grade_analysis(self):
+    def show_grade_analysis(self):
         self.clear_widgets()
-        grade_anlysis = Factory.Grade_Analysis()
+        grade_analysis = Factory.Grade_Analysis()
         self.add_widget(grade_analysis)
         
-    def show_login_form(self): # graduate의 back버튼(to Home)
+    def show_login_form(self): # grade analysis의 back버튼(to Home)
         self.clear_widgets()
         self.add_widget(LoginForm())
         

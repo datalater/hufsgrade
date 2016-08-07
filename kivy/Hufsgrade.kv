@@ -16,10 +16,7 @@ HufsGradeRoot:
         height: "40dp"
         Button:
             text: "Back"
-            on_press: app.root.show_login_form()
-        Button:
-            text: "Analysis"
-    
+            on_press: app.root.show_login_form()    
 
 <LoginForm>:
     orientation: "vertical"
@@ -60,7 +57,7 @@ HufsGradeRoot:
                 on_press: root.credits_to_graduate()
             Button:
                 text: "Grade Analysis"
-                on_press: app.root.grade_analysis()
+                on_press: app.root.show_grade_analysis()
     ListView:
         id: studentinfo_results_list
 		adapter:
