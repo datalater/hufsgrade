@@ -3,6 +3,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty
 from kivy.network.urlrequest import UrlRequest
 from kivy.uix.button import Button
+from kivy.uix.listview import ListView
 from kivy.factory import Factory
 
 import requests
@@ -16,8 +17,9 @@ studentinfo_url = "http://webs.hufs.ac.kr:8989/src08/jsp/stuinfo_10/STUINFO1000C
 credits_to_graduate_url = "http://webs.hufs.ac.kr:8989/src08/jsp/grade/GRADE1030L_Top.jsp?tab_lang=K"
 
 class HufsGradeRoot(BoxLayout):
+        
     def show_grade_analysis(self):
-        self.clear_widgets()
+        self.clear_widgets()  # login정보인 text input은 남기고 listview만 remove할 수 없을까?
         grade_analysis = Factory.Grade_Analysis()
         self.add_widget(grade_analysis)
         
@@ -88,9 +90,9 @@ class LoginForm(BoxLayout):
         
         major_state = ""
         if html.find(string=re.compile('이중전공')) is not None:
-            major_state ="dual major"
+            major_state ="Dual major"
         elif html.find(string=re.compile('부전공')) is not None:
-            major_state = "minor"
+            major_state = "Minor"
         else:
             major_state = "not yet decided"
                 
@@ -102,6 +104,8 @@ class LoginForm(BoxLayout):
         self.studentinfo_results.adapter.data.clear()
         self.studentinfo_results.adapter.data.extend(credits_to_graduate)
         self.studentinfo_results._trigger_reset_populate()
+        
+        ## 두 번 누르면 다음과 같은 오류 뜸 => TypeError: 'Response' object is not callable
 
 class HufsGradeApp(App):
     pass

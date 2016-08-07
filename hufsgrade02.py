@@ -57,17 +57,32 @@ class parse_score():
         
         major_state = ""
         if html.find(string=re.compile('이중전공')) is not None:
-            major_state ="dual major"
+            major_state ="Dual major"
         elif html.find(string=re.compile('부전공')) is not None:
-            major_state = "minor"
+            major_state = "Minor"
         else:
             major_state = "not yet decided"
         print(major_state)
         
         grade_data = [i.string for i in html.find("tr",class_="table_w").find_all("td")]
-        grade_data=grade_data[1:-1]
+        credits_completed = grade_data[1:-2]
+        grade_per_average = grade_data[-2:-1]
+        credits_completed = list(map(int, credits_completed))
+        grade_per_average = list(map(float, grade_per_average))
+        print(credits_completed)
+        print(grade_per_average)
+
+        #2015~학번(사범대 제외)
+        #dual_major_required = [54, 42, 0, 6, 26, 0, 0, 6, 134]
+        #minor_required = [70, 0, 21, 6, 26, 0, 0, 11, 134]
+      
+        #2007~2014학번(사범대 제외)
+        dual_major_required = [54, 54, 0, 4, 22, 0, 0, 0, 134]
+        minor_required = [75, 0, 21, 4, 22, 0, 0, 12, 134]
         
-        print(grade_data)
+        
+
+        
 
 
 # 소속대학: student_college = html.find(string=re.compile('소속')).parent.next_sibling.next_sibling.next_element.next_element.string
