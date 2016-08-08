@@ -1,0 +1,5 @@
+https://github.com/kivy/buildozer
+
+$ sudo pip install buildozer
+
+$ buildozer andorid debug deploy

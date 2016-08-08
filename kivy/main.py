@@ -64,10 +64,6 @@ class LoginForm(BoxLayout):
         self.studentinfo_results.adapter.data.extend(studentinfo)
         self.studentinfo_results._trigger_reset_populate()
 
-# 소속(ResultSet): html.find(string=re.compile('소속')).parent.next_sibling.next_sibling.stripped_strings
-# 학번: html.find(string=re.compile('학번')).parent.next_sibling.next_sibling.string
-# 성명: html.find(string=re.compile('성명')).parent.next_sibling.next_sibling.next_sibling.next_sibling.string
-
     def credits_to_graduate(self):
         self.current_session = requests.session()
 
@@ -82,14 +78,14 @@ class LoginForm(BoxLayout):
         self.current_session.post(login_url,data=params,headers=head)
         self.current_session.get(main_page,headers=head)
         
-        self.credits_to_graduate=self.current_session.get(credits_to_graduate_url,headers=head)
-        html = BeautifulSoup(self.credits_to_graduate.text, "html.parser")
+        self.graduateinfo=self.current_session.get(credits_to_graduate_url,headers=head)
+        html = BeautifulSoup(self.graduateinfo.text, "html.parser")
         
         major_state = ""
         if html.find(string=re.compile('이중전공')) is not None:
             major_state ="Dual major"
         elif html.find(string=re.compile('부전공')) is not None:
-            major_state = "Minor"
+            major_state = "Major and minor"
         else:
             major_state = "not yet decided"
                 
@@ -97,48 +93,44 @@ class LoginForm(BoxLayout):
         credits_completed = grade_data[1:-2]
         grade_per_average = grade_data[-2:-1]
                         
-        credits_to_graduate = [major_state] + credits_completed + grade_per_average
-        self.studentinfo_results.item_strings = credits_to_graduate
-        self.studentinfo_results.adapter.data.clear()
-        self.studentinfo_results.adapter.data.extend(credits_to_graduate)
-        self.studentinfo_results._trigger_reset_populate()
+        graduateinfo = credits_completed + grade_per_average
+ 
         
         #2015~학번(사범대 제외)
-        #dual_major_required = [54, 42, 0, 6, 26, 0, 0, 6, 134]
-        #minor_required = [70, 0, 21, 6, 26, 0, 0, 11, 134]
+        #dual_major_required = [54, 42, 0, 6, 26, 0, 0, 6, 134,4.5]
+        #minor_required = [70, 0, 21, 6, 26, 0, 0, 11, 134,4.5]
       
         #2007~2014학번(사범대 제외)
-        dual_major_required = ['', 54, 54, 0, 4, 22, 0, 0, 0, 134, 4.5]
-        minor_required = ['', 75, 0, 0, 4, 22, 21, 0, 12, 134, 4.5]
+        dual_major_required = [54, 54, 0, 4, 22, 0, 0, 0, 134, 4.5]
+        minor_required = [75, 0, 0, 4, 22, 21, 0, 12, 134, 4.5]
         dual_major_required = list(map(str, dual_major_required))
         minor_required = list(map(str, minor_required))
 
         versus_list = [
-        'Credits earned per field', 
-        '1st major: ', 
-        'Double major: ', 
-        '2nd major: ', 
-        'Practical foreign language: ', 
-        'Liberal arts: ', 
-        'Minor: ', 
-        'Teaching profession: ', 
-        'Elective subject credits: ', 
-        'Total credits: ', 'Total GPA: ']
+            '1st major: ', 
+            'Double major: ', 
+            '2nd major: ', 
+            'Practical foreign language: ', 
+            'Liberal arts: ', 
+            'Minor: ', 
+            'Teaching profession: ', 
+            'Elective subject credits: ', 
+            'Total credits: ', 'Total GPA: '
+            ]
         
         if major_state == "Dual major":
-            for i in range(1,len(versus_list)):
-                versus_list[i] = versus_list[i]+credits_to_graduate[i] + " / " + dual_major_required[i]
-        elif major_state == "Minor":
-            for i in range(1,len(versus_list)):
-                versus_list[i] = versus_list[i]+credits_to_graduate[i] + " / " + minor_major_required[i]
+            for i in range(len(versus_list)):
+                versus_list[i] = versus_list[i]+graduateinfo[i] + " / " + dual_major_required[i]
+        elif major_state == "Major and minor":
+            for i in range(len(versus_list)):
+                versus_list[i] = versus_list[i]+graduateinfo[i] + " / " + minor_major_required[i]
+        else:
+            versus_list = list(graduateinfo)
         
         self.studentinfo_results.item_strings = versus_list
         self.studentinfo_results.adapter.data.clear()
         self.studentinfo_results.adapter.data.extend(versus_list)
         self.studentinfo_results._trigger_reset_populate()
-        
-        
-        ## 두 번 누르면 다음과 같은 오류 뜸 => TypeError: 'Response' object is not callable
 
 class HufsGradeApp(App):
     pass
