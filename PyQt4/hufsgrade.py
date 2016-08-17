@@ -3,6 +3,10 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from PyQt4 import uic
 
+import requests
+from bs4 import BeautifulSoup
+import re
+
 form_class = uic.loadUiType("main_window.ui")[0]
 
 class MyWindow(QMainWindow, form_class):
