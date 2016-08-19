@@ -2,8 +2,6 @@ import requests
 from bs4 import BeautifulSoup
 import getpass
 
-from kivy.app import App
-from kivy.uix.widget import Widget
 import re
 import time
 
@@ -46,10 +44,17 @@ class parse_score():
         student_id= html.find(string=re.compile('학번')).parent.next_sibling.next_sibling.string
         student_name = html.find(string=re.compile('성명')).parent.parent.next_sibling.next_element.next_element.next_element.next_sibling.next_sibling.string
         student_name = student_name.replace("\r\n\t\t\t\t","")
+        student_name_ko = html.find(string=re.compile('성명')).parent.next_sibling.next_sibling.string
+        student_name_ko = student_name.replace("\r\n\t\t\t\t","")
+        test = html.find(string=re.compile('성명')).parent.next_sibling.next_sibling.next_sibling.next_sibling.string
+        print("---------------------------------------------------------")
         print(student_college)
         print(student_major)
         print(student_id)
         print(student_name)
+        print(student_name_ko)
+        print(test)
+        print("---------------------------------------------------------")
 
 
         self.gradeinfo=self.current_session.get(gradeinfo_url,headers=head)
