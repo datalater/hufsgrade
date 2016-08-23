@@ -17,6 +17,8 @@ login_url = "https://webs.hufs.ac.kr/src08/jsp/login/LOGIN1011M.jsp"
 main_page = "http://webs.hufs.ac.kr:8989/src08/jsp/main.jsp?"
 studentinfo_url = "http://webs.hufs.ac.kr:8989/src08/jsp/stuinfo_10/STUINFO1000C_myinfo.jsp"
 credits_url = "http://webs.hufs.ac.kr:8989/src08/jsp/grade/GRADE1030L_Top.jsp?tab_lang=K"
+credits_list_url = "http://webs.hufs.ac.kr:8989/src08/jsp/grade/GRADE1030L_List.jsp?tab_lang=K"
+
 
 form_class = uic.loadUiType("main_window.ui")[0]
 
@@ -25,6 +27,17 @@ class MyWindow(QMainWindow, form_class):
         super().__init__()
         self.setupUi(self)
         self.connect(self.pushButton, SIGNAL("clicked()"), self.login)
+        
+        self.label_4.setText("한국외국대학교 종합정보시스템 ID와 PWD를 입력해주세요.")
+
+        #-------------------------위젯 하이드--------------------------#
+        self.line_2.hide()
+        self.label_3.hide()
+        self.label_5.hide()
+        self.label_6.hide()
+        self.label_7.hide()
+        self.label_8.hide()
+        self.tableWidget.hide()
 
     def login(self):
         self.current_session = requests.session()
@@ -45,18 +58,19 @@ class MyWindow(QMainWindow, form_class):
         student_name = student_name.replace("\r\n\t\t\t\t","")
         student_name_ko = html.find(string=re.compile('성명')).parent.next_sibling.next_sibling.next_sibling.next_sibling.string
         
-        #-------------------------성적정보--------------------------#
+        #-------------------------성적정보(영역별취득학점)--------------------------#
+
         self.graduateinfo=self.current_session.get(credits_url,headers=head)
         html = BeautifulSoup(self.graduateinfo.text, "html.parser")
         
         major_state = ""
-        if html.find(string=re.compile('이중전공')) is not None:
+        if html.find(string=re.compile('\[이중전공\]')) is not None:
             major_state ="이중전공"
-        elif html.find(string=re.compile('부전공')) is not None:
-            major_state = "부전공"
+        elif html.find(string=re.compile('전공심화')) is not None:
+            major_state = "전공심화(부전공)"
         else:
             major_state = "not yet decided"
-                
+
         grade_data = [i.string for i in html.find("tr",class_="table_w").find_all("td")]
         credits_completed = grade_data[1:-2]
         grade_per_average = grade_data[-2:-1]
@@ -72,6 +86,38 @@ class MyWindow(QMainWindow, form_class):
         minor_required = [75, 0, 0, 4, 22, 21, 0, 12, 134, 4.5]
         dual_major_required = list(map(str, dual_major_required))
         minor_required = list(map(str, minor_required))
+
+        #-------------------------성적정보(전공평점)--------------------------#
+
+        self.creditsinfo=self.current_session.get(credits_list_url,headers=head)
+        html = BeautifulSoup(self.creditsinfo.text, "html.parser")
+
+        grade_dic = {'A+':4.5, 'A0':4.0, 'B+':3.5, 'B0':3.0, 'C+':2.5, 'C0':2.0, 'D+':1.5, 'D0':1.0, 'F':0}
+
+        # 전공 평점 구하기 시작
+        first_major_credit = [] # credit: 학점(e.g. 3)
+        first_major_grade = [] # grade: 등급(e.g. A+)
+        first_major_grade_float = [] # grade_float: 등급 환산 점수(e.g. A+ -> 4.5)
+        first_major_multiply = []
+        
+        for td in html.find_all("tr",class_="table_w"):
+            for td_first_major in td.find_all(string=re.compile('1전공|이중')):
+                for td_credits in td_first_major.parent.next_sibling.next_sibling:
+                    first_major_credit.append(float(td_credits))
+                for td_grades in td_first_major.parent.next_sibling.next_sibling.next_sibling.next_sibling:
+                    first_major_grade.append(td_grades)
+
+        # 등급 점수로 환산하기(e.g. A+ -> 4.5)
+        for element in first_major_grade:
+            first_major_grade_float.append(grade_dic[element])
+            
+        # 학점 곱하기 등급
+        for i in range(len(first_major_credit)):
+            first_major_multiply.append(first_major_credit[i] * first_major_grade_float[i])
+
+        # 전공 평점 구하기 끝
+        first_major_gpa = round(sum(first_major_multiply)/sum(first_major_credit),2)
+        
         
         
         #-------------------------학생정보 나타내기--------------------------#
@@ -100,7 +146,7 @@ class MyWindow(QMainWindow, form_class):
                     item.setBackground(brush)
                     item.setText(str(int(dual_major_required[i])-int(graduateinfo[i])))
                     self.tableWidget.setItem(2, i, item)
-        elif major_state == "부전공":
+        elif major_state == "전공심화(부전공)":
             for i in range(len(minor_required)):
                 self.tableWidget.setItem(0, i, QTableWidgetItem(minor_required[i]))
                 self.tableWidget.setItem(1, i, QTableWidgetItem(graduateinfo[i]))
@@ -114,13 +160,15 @@ class MyWindow(QMainWindow, form_class):
         else:
             for i in range(len(dual_major_required)):
                 self.tableWidget.setItem(1, i, QTableWidgetItem(graduateinfo[i]))
+
+        self.label_8.setText(str(first_major_gpa)+")")
                 
         #-----------------------------------------------------------------------------------#
 
         # 상태bar
         self.label_4.setText("로그인 성공하였습니다.")
 
-        # 위젯 delete 코드 쓰기
+        #-------------------------로그인 위젯 delete--------------------------#
         self.label.deleteLater()
         self.label = None
         self.label_2.deleteLater()
@@ -131,6 +179,16 @@ class MyWindow(QMainWindow, form_class):
         self.label = None
         self.pushButton.deleteLater()
         self.label = None
+
+        #-------------------------위젯 show--------------------------#
+        self.line.hide()
+        self.line_2.show()
+        self.label_3.show()
+        self.label_5.show()
+        self.label_6.show()
+        self.label_7.show()
+        self.label_8.show()
+        self.tableWidget.show()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

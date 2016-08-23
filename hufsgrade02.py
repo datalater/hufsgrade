@@ -13,6 +13,7 @@ login_url = "https://webs.hufs.ac.kr/src08/jsp/login/LOGIN1011M.jsp"
 main_page = "http://webs.hufs.ac.kr:8989/src08/jsp/main.jsp?"
 studentinfo_url = "http://webs.hufs.ac.kr:8989/src08/jsp/stuinfo_10/STUINFO1000C_myinfo.jsp"
 gradeinfo_url = "http://webs.hufs.ac.kr:8989/src08/jsp/grade/GRADE1030L_Top.jsp?tab_lang=K"
+credits_list_url = "http://webs.hufs.ac.kr:8989/src08/jsp/grade/GRADE1030L_List.jsp?tab_lang=K"
 
 class parse_score():
     def __init__(self):
@@ -34,6 +35,38 @@ class parse_score():
         self.current_session.get(main_page,headers=head)
 
     def studentinfo(self):
+        self.creditsinfo=self.current_session.get(credits_list_url,headers=head)
+        html = BeautifulSoup(self.creditsinfo.text, "html.parser")
+
+        grade_dic = {'A+':4.5, 'A0':4.0, 'B+':3.5, 'B0':3.0, 'C+':2.5, 'C0':2.0, 'D+':1.5, 'D0':1.0, 'F':0}
+
+        first_major_credits = []
+        first_major_times = []
+        first_major_times_float = []
+        first_major_multiply = []
+        
+        for td in html.find_all("tr",class_="table_w"):
+            for td_first_major in td.find_all(string=re.compile('1전공')):
+                for td_credits in td_first_major.parent.next_sibling.next_sibling:
+                    first_major_credits.append(float(td_credits))
+                for td_times in td_first_major.parent.next_sibling.next_sibling.next_sibling.next_sibling:
+                    first_major_times.append(td_times)
+        print(first_major_credits)
+        print(first_major_times)
+        print("------------------------------------------------------")
+        for element in first_major_times:
+            first_major_times_float.append(grade_dic[element])
+        print(first_major_times_float)
+
+        first_major_credits= list(map(float, first_major_credits))
+        for i in range(len(first_major_credits)):
+            first_major_multiply.append(first_major_credits[i] * first_major_times_float[i])
+        print(first_major_multiply)
+        print(round(sum(first_major_multiply)/sum(first_major_credits),2))
+        
+
+        
+        
         self.studentinfo=self.current_session.get(studentinfo_url,headers=head)
         html = BeautifulSoup(self.studentinfo.text, "html.parser")
 
@@ -44,15 +77,12 @@ class parse_score():
         student_id= html.find(string=re.compile('학번')).parent.next_sibling.next_sibling.string
         student_name = html.find(string=re.compile('성명')).parent.parent.next_sibling.next_element.next_element.next_element.next_sibling.next_sibling.string
         student_name = student_name.replace("\r\n\t\t\t\t","")
-        student_name_ko = html.find(string=re.compile('성명')).parent.next_sibling.next_sibling.string
-        student_name_ko = student_name.replace("\r\n\t\t\t\t","")
         test = html.find(string=re.compile('성명')).parent.next_sibling.next_sibling.next_sibling.next_sibling.string
         print("---------------------------------------------------------")
         print(student_college)
         print(student_major)
         print(student_id)
         print(student_name)
-        print(student_name_ko)
         print(test)
         print("---------------------------------------------------------")
 
