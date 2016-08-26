@@ -27,6 +27,7 @@ class MyWindow(QMainWindow, form_class):
         super().__init__()
         self.setupUi(self)
         self.connect(self.pushButton, SIGNAL("clicked()"), self.login)
+        self.connect(self.pushButton_2, SIGNAL("clicked()"), self.goback)
         
         self.label_4.setText("한국외국대학교 종합정보시스템 ID와 PWD를 입력해주세요.")
 
@@ -38,6 +39,8 @@ class MyWindow(QMainWindow, form_class):
         self.label_7.hide()
         self.label_8.hide()
         self.tableWidget.hide()
+        self.label_8.hide()
+        self.pushButton_2.hide()
 
     def login(self):
         self.current_session = requests.session()
@@ -64,10 +67,10 @@ class MyWindow(QMainWindow, form_class):
         html = BeautifulSoup(self.graduateinfo.text, "html.parser")
         
         major_state = ""
-        if html.find(string=re.compile('\[이중전공\]')) is not None:
+        if html.find(string=re.compile('이중전공')) is not None:
             major_state ="이중전공"
-        elif html.find(string=re.compile('전공심화')) is not None:
-            major_state = "전공심화(부전공)"
+        elif html.find(string=re.compile('부전공')) is not None:
+            major_state = "부전공"
         else:
             major_state = "not yet decided"
 
@@ -146,7 +149,7 @@ class MyWindow(QMainWindow, form_class):
                     item.setBackground(brush)
                     item.setText(str(int(dual_major_required[i])-int(graduateinfo[i])))
                     self.tableWidget.setItem(2, i, item)
-        elif major_state == "전공심화(부전공)":
+        elif major_state == "부전공":
             for i in range(len(minor_required)):
                 self.tableWidget.setItem(0, i, QTableWidgetItem(minor_required[i]))
                 self.tableWidget.setItem(1, i, QTableWidgetItem(graduateinfo[i]))
@@ -168,20 +171,15 @@ class MyWindow(QMainWindow, form_class):
         # 상태bar
         self.label_4.setText("로그인 성공하였습니다.")
 
-        #-------------------------로그인 위젯 delete--------------------------#
-        self.label.deleteLater()
-        self.label = None
-        self.label_2.deleteLater()
-        self.label = None
-        self.lineEdit.deleteLater()
-        self.label = None
-        self.lineEdit_2.deleteLater()
-        self.label = None
-        self.pushButton.deleteLater()
-        self.label = None
-
-        #-------------------------위젯 show--------------------------#
+        #-------------------------로그인 위젯 hide--------------------------#
+        self.label.hide()
+        self.label_2.hide()
+        self.lineEdit.hide()
+        self.lineEdit_2.hide()
+        self.pushButton.hide()
         self.line.hide()
+
+        #-------------------------학생/성적정보 위젯 show--------------------------#
         self.line_2.show()
         self.label_3.show()
         self.label_5.show()
@@ -189,6 +187,26 @@ class MyWindow(QMainWindow, form_class):
         self.label_7.show()
         self.label_8.show()
         self.tableWidget.show()
+        self.pushButton_2.show()
+
+    def goback(self):
+        #-------------------------학생/성적정보 위젯 hide--------------------------#
+        self.line_2.hide()
+        self.label_3.hide()
+        self.label_5.hide()
+        self.label_6.hide()
+        self.label_7.hide()
+        self.label_8.hide()
+        self.tableWidget.hide()
+        self.pushButton_2.hide()
+
+        #-------------------------로그인 위젯 show--------------------------#
+        self.label.show()
+        self.label_2.show()
+        self.lineEdit.show()
+        self.lineEdit_2.show()
+        self.pushButton.show()
+        self.line.show()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
