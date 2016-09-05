@@ -1,3 +1,4 @@
+import os
 import sys
 from PyQt4 import QtGui, QtCore
 
@@ -5,6 +6,7 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import time
+from os.path import join, abspath
 
 head={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 login_url = "https://webs.hufs.ac.kr/src08/jsp/login/LOGIN1011M.jsp"
@@ -12,6 +14,8 @@ main_page = "http://webs.hufs.ac.kr:8989/src08/jsp/main.jsp?"
 studentinfo_url = "http://webs.hufs.ac.kr:8989/src08/jsp/stuinfo_10/STUINFO1000C_myinfo.jsp"
 credits_url = "http://webs.hufs.ac.kr:8989/src08/jsp/grade/GRADE1030L_Top.jsp?tab_lang=K"
 credits_list_url = "http://webs.hufs.ac.kr:8989/src08/jsp/grade/GRADE1030L_List.jsp?tab_lang=K"
+
+requests.utils.DEFAULT_CA_BUNDLE_PATH = join(abspath('.'), 'cacert.pem')
 
 full_size = [660, 500]
 

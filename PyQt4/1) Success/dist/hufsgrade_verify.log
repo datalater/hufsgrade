@@ -1,0 +1,8 @@
+C:\Python34\jmcproject\hufsgrade\PyQt4\dist\library.zip\requests\packages\urllib3\connectionpool.py:838: InsecureRequestWarning: Unverified HTTPS request is being made. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/security.html
+C:\Python34\jmcproject\hufsgrade\PyQt4\dist\library.zip\requests\packages\urllib3\connectionpool.py:838: InsecureRequestWarning: Unverified HTTPS request is being made. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/security.html
+C:\Python34\jmcproject\hufsgrade\PyQt4\1) Success\dist\library.zip\requests\packages\urllib3\connectionpool.py:838: InsecureRequestWarning: Unverified HTTPS request is being made. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/security.html
+C:\Python34\jmcproject\hufsgrade\PyQt4\1) Success\dist\library.zip\requests\packages\urllib3\connectionpool.py:838: InsecureRequestWarning: Unverified HTTPS request is being made. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/security.html
+Traceback (most recent call last):
+  File "hufsgrade_verify.py", line 377, in login
+ZeroDivisionError: division by zero
+C:\Python34\jmcproject\hufsgrade\PyQt4\1) Success\dist\library.zip\requests\packages\urllib3\connectionpool.py:838: InsecureRequestWarning: Unverified HTTPS request is being made. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/security.html
