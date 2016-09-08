@@ -61,16 +61,19 @@ class MyWindow(QMainWindow, form_class):
         student_name = student_name.replace("\r\n\t\t\t\t","")
         student_name_ko = html.find(string=re.compile('성명')).parent.next_sibling.next_sibling.next_sibling.next_sibling.string
         
+        # 입학연도 
+        student_id_year = int(str(student_id)[:4])
+        
         #-------------------------성적정보(영역별취득학점)--------------------------#
 
         self.graduateinfo=self.current_session.get(credits_url,headers=head)
         html = BeautifulSoup(self.graduateinfo.text, "html.parser")
         
         major_state = ""
-        if html.find(string=re.compile('이중전공')) is not None:
+        if html.find(string=re.compile('\[이중전공\]')) is not None:
             major_state ="이중전공"
-        elif html.find(string=re.compile('부전공')) is not None:
-            major_state = "부전공"
+        elif html.find(string=re.compile('전공심화')) is not None:
+            major_state = "전공심화(부전공)"
         else:
             major_state = "not yet decided"
 
@@ -81,12 +84,12 @@ class MyWindow(QMainWindow, form_class):
         graduateinfo = credits_completed + grade_per_average
         
         #2015~학번(사범대 제외)
-        #dual_major_required = [54, 42, 0, 6, 26, 0, 0, 6, 134,4.5]
-        #minor_required = [70, 0, 21, 6, 26, 0, 0, 11, 134,4.5]
+        dual_major_required_15 = [54, 42, 0, 6, 26, 0, 0, 6, 134, 4.5]
+        minor_required_15         = [70, 0, 21, 6, 26, 0, 0, 11, 134, 4.5]
       
         #2007~2014학번(사범대 제외)
-        dual_major_required = [54, 54, 0, 4, 22, 0, 0, 0, 134, 4.5]
-        minor_required = [75, 0, 0, 4, 22, 21, 0, 12, 134, 4.5]
+        dual_major_required  = [54, 54, 0, 4, 22, 0, 0, 0, 134, 4.5]
+        minor_required          = [75, 0, 0, 4, 22, 21, 0, 12, 134, 4.5]
         dual_major_required = list(map(str, dual_major_required))
         minor_required = list(map(str, minor_required))
 
@@ -128,48 +131,99 @@ class MyWindow(QMainWindow, form_class):
         self.label_6.setText("영역별 취득학점: "+major_state+" 기준")
         self.label_5.setText(student_name_ko+"("+student_name+")"+"님, 반갑습니다.")
         
+        # 상태bar
+        self.label_4.setText("로그인 성공하였습니다.")
         
         #-------------------------성적정보 테이블 위젯에 나타내기--------------------------#
-        if major_state == "이중전공": 
+        
+        if student_id_year < 2015 or student_id_year > 2007:
+        
+            if major_state == "이중전공": 
+                for i in range(len(dual_major_required)):
+                    item = QTableWidgetItem()
+                    item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter|Qt.AlignCenter)
+                    item.setText(dual_major_required[i])
+                    self.tableWidget.setItem(0, i, item)
+                    
+                    item = QTableWidgetItem()
+                    item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter|Qt.AlignCenter)
+                    item.setText(graduateinfo[i])
+                    self.tableWidget.setItem(1, i, item)
+                    if i <9:
+                        item = QTableWidgetItem()
+                        item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter|Qt.AlignCenter)
+                        brush = QBrush(QColor(220, 255, 217))
+                        brush.setStyle(Qt.SolidPattern)
+                        item.setBackground(brush)
+                        item.setText(str(int(dual_major_required[i])-int(graduateinfo[i])))
+                        self.tableWidget.setItem(2, i, item)
+            elif major_state == "전공심화(부전공)":
+                for i in range(len(minor_required)):
+                    self.tableWidget.setItem(0, i, QTableWidgetItem(minor_required[i]))
+                    self.tableWidget.setItem(1, i, QTableWidgetItem(graduateinfo[i]))
+                    if i <9:
+                        item = QTableWidgetItem()
+                        item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter|Qt.AlignCenter)
+                        brush = QBrush(QColor(220, 255, 217))
+                        brush.setStyle(Qt.SolidPattern)
+                        item.setBackground(brush)
+                        self.tableWidget.setItem(2, i, QTableWidgetItem(str(int(minor_required[i])-int(graduateinfo[i]))))                    
+            else:
+                for i in range(len(dual_major_required)):
+                    self.tableWidget.setItem(1, i, QTableWidgetItem(graduateinfo[i]))
+                    
+        elif student_id_year >= 2015:
+        
+            if major_state == "이중전공": 
+                for i in range(len(dual_major_required)):
+                    item = QTableWidgetItem()
+                    item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter|Qt.AlignCenter)
+                    item.setText(dual_major_required_15[i])
+                    self.tableWidget.setItem(0, i, item)
+                    
+                    item = QTableWidgetItem()
+                    item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter|Qt.AlignCenter)
+                    item.setText(graduateinfo[i])
+                    self.tableWidget.setItem(1, i, item)
+                    if i <9:
+                        item = QTableWidgetItem()
+                        item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter|Qt.AlignCenter)
+                        brush = QBrush(QColor(220, 255, 217))
+                        brush.setStyle(Qt.SolidPattern)
+                        item.setBackground(brush)
+                        item.setText(str(int(dual_major_required_15[i])-int(graduateinfo[i])))
+                        self.tableWidget.setItem(2, i, item)
+            elif major_state == "전공심화(부전공)":
+                for i in range(len(minor_required)):
+                    self.tableWidget.setItem(0, i, QTableWidgetItem(minor_required_15[i]))
+                    self.tableWidget.setItem(1, i, QTableWidgetItem(graduateinfo[i]))
+                    if i <9:
+                        item = QTableWidgetItem()
+                        item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter|Qt.AlignCenter)
+                        brush = QBrush(QColor(220, 255, 217))
+                        brush.setStyle(Qt.SolidPattern)
+                        item.setBackground(brush)
+                        self.tableWidget.setItem(2, i, QTableWidgetItem(str(int(minor_required_15[i])-int(graduateinfo[i]))))                    
+            else:
+                for i in range(len(dual_major_required)):
+                    self.tableWidget.setItem(1, i, QTableWidgetItem(graduateinfo[i]))
+            
+        else:
             for i in range(len(dual_major_required)):
-                item = QTableWidgetItem()
-                item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter|Qt.AlignCenter)
-                item.setText(dual_major_required[i])
-                self.tableWidget.setItem(0, i, item)
                 
                 item = QTableWidgetItem()
                 item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter|Qt.AlignCenter)
                 item.setText(graduateinfo[i])
                 self.tableWidget.setItem(1, i, item)
-                if i <9:
-                    item = QTableWidgetItem()
-                    item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter|Qt.AlignCenter)
-                    brush = QBrush(QColor(220, 255, 217))
-                    brush.setStyle(Qt.SolidPattern)
-                    item.setBackground(brush)
-                    item.setText(str(int(dual_major_required[i])-int(graduateinfo[i])))
-                    self.tableWidget.setItem(2, i, item)
-        elif major_state == "부전공":
-            for i in range(len(minor_required)):
-                self.tableWidget.setItem(0, i, QTableWidgetItem(minor_required[i]))
-                self.tableWidget.setItem(1, i, QTableWidgetItem(graduateinfo[i]))
-                if i <9:
-                    item = QTableWidgetItem()
-                    item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter|Qt.AlignCenter)
-                    brush = QBrush(QColor(220, 255, 217))
-                    brush.setStyle(Qt.SolidPattern)
-                    item.setBackground(brush)
-                    self.tableWidget.setItem(2, i, QTableWidgetItem(str(int(minor_required[i])-int(graduateinfo[i]))))                    
-        else:
-            for i in range(len(dual_major_required)):
-                self.tableWidget.setItem(1, i, QTableWidgetItem(graduateinfo[i]))
-
+            self.label_4.setText("07년도 이전 입학 학번에 대해서는 필수학점을 제공하지 않습니다.")
+            
         self.label_8.setText(str(first_major_gpa)+")")
+        
+        
                 
         #-----------------------------------------------------------------------------------#
 
-        # 상태bar
-        self.label_4.setText("로그인 성공하였습니다.")
+        
 
         #-------------------------로그인 위젯 hide--------------------------#
         self.label.hide()

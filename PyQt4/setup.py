@@ -7,7 +7,7 @@ Mydata_files = [('images', ['C:/Users/hufs/Downloads/download/lawjmc/hufsgrade/h
 setup(
     windows = [
         {
-            "script": "hufsgrade_ver1.0.py",
+            "script": "hufsgrade_ver1.1.py",
             "icon_resources": [(0, "hufslogo.png.ico")]
         }
     ],
