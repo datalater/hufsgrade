@@ -2,12 +2,15 @@ from distutils.core import setup
 import py2exe
 import requests.certs
 
-Mydata_files = [('images', ['C:/Users/hufs/Downloads/download/lawjmc/hufsgrade/hufslogo.png'])]
+Mydata_files = [
+    ('images', ['C:/Users/hufs/Downloads/download/lawjmc/hufsgrade/hufslogo.png']),
+    ('imageformats', ['C:/Python34/Lib/site-packages\/PyQt4/plugins/imageformats/qico4.dll'])
+    ]
 
 setup(
     windows = [
         {
-            "script": "hufsgrade_ver1.1.py",
+            "script": "hufsgrade_ver1.4.py",
             "icon_resources": [(0, "hufslogo.png.ico")]
         }
     ],
