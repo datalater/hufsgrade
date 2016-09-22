@@ -10,7 +10,7 @@ Mydata_files = [
 setup(
     windows = [
         {
-            "script": "hufsgrade_ver1.4.py",
+            "script": "hufsgrade_ver1.5.py",
             "icon_resources": [(0, "hufslogo.png.ico")]
         }
     ],
